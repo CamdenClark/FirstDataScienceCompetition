@@ -3,7 +3,7 @@ import pandas as pd
 import AbstractModel as abst
 import keras
 from keras.models import Sequential, load_model
-from keras.layers import Dense, Dropout, Flatten
+from keras.layers import Activation, BatchNormalization, Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras.optimizers import SGD
 from sklearn.model_selection import train_test_split
@@ -79,18 +79,29 @@ class NumberModel(abst.AbsModel):
     def load_model(self):
         self.model = Sequential()
         self.model.add(Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(24, 24, 1)))
+        self.model.add(BatchNormalization())
+        self.model.add(Dropout(0.25))
+
         self.model.add(Conv2D(32, (3, 3), activation='relu'))
+        self.model.add(BatchNormalization())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
 
         self.model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
-        self.model.add(Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(BatchNormalization())
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
+        self.model.add(Dropout(0.25))
+
+        self.model.add(Conv2D(128, (3, 3), activation='relu'))
+        self.model.add(BatchNormalization())
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
 
         self.model.add(Flatten())
-        self.model.add(Dense(256, activation='relu'))
-        self.model.add(Dropout(0.5))
+        self.model.add(Dense(500, use_bias = False))
+        self.model.add(BatchNormalization())
+        self.model.add(Activation('relu'))
+        self.model.add(Dropout(0.25))
         self.model.add(Dense(10, activation='softmax'))
 
         self.model.compile(loss='categorical_crossentropy', optimizer='adam')
@@ -100,7 +111,7 @@ class NumberModel(abst.AbsModel):
 
     def fit(self):
         self.log(str(self.model.to_json()))
-        self.model.fit(self.train, self.train_labels, batch_size=32, epochs=10)
+        self.model.fit(self.train, self.train_labels, batch_size=128, epochs=10)
         self.model.save('number_model.h5')
 
     def score(self):
@@ -133,17 +144,17 @@ class NumberModel(abst.AbsModel):
 
 
 test = NumberModel()
-#test.load_train(
-#    pd.read_csv("data/train.csv"),
-#    pd.read_csv("data/train_labels.csv")
-#    )
-#test.load_model()
-#test.fit()
-test.load_test(
-        pd.read_csv("data/test.csv")
-        )
-test.load_model_from_file('number_model.h5')
-test.predict()
+test.load_train(
+    pd.read_csv("data/train.csv"),
+    pd.read_csv("data/train_labels.csv")
+    )
+test.load_model()
+test.fit()
+#test.load_test(
+#        pd.read_csv("data/test.csv")
+#        )
+#test.load_model_from_file('number_model.h5')
+#test.predict()
 
 def split_test(test_csv):
     matrix_rep = test_csv.drop(['index'], axis=1).as_matrix().reshape(20000,24,120)
