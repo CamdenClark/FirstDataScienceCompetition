@@ -78,12 +78,12 @@ class NumberModel(abst.AbsModel):
     
     def load_model(self):
         self.model = Sequential()
-        self.model.add(Conv2D(32, (4, 4), activation='relu', input_shape=(24, 24, 1)))
-        self.model.add(Conv2D(32, (4, 4), activation='relu'))
+        self.model.add(Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(24, 24, 1)))
+        self.model.add(Conv2D(32, (3, 3), activation='relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
 
-        self.model.add(Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
         self.model.add(Conv2D(64, (3, 3), activation='relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
@@ -93,7 +93,7 @@ class NumberModel(abst.AbsModel):
         self.model.add(Dropout(0.5))
         self.model.add(Dense(10, activation='softmax'))
 
-        self.model.compile(loss='mean_squared_error', optimizer='adam')
+        self.model.compile(loss='categorical_crossentropy', optimizer='adam')
     
     def load_model_from_file(self, filename):
         self.model = load_model(filename)
@@ -134,9 +134,9 @@ class NumberModel(abst.AbsModel):
 
 test = NumberModel()
 #test.load_train(
- #   pd.read_csv("data/train.csv"),
- #   pd.read_csv("data/train_labels.csv")
- #   )
+#    pd.read_csv("data/train.csv"),
+#    pd.read_csv("data/train_labels.csv")
+#    )
 #test.load_model()
 #test.fit()
 test.load_test(
