@@ -78,22 +78,26 @@ class NumberModel(abst.AbsModel):
     
     def load_model(self):
         self.model = Sequential()
-        self.model.add(Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(24, 24, 1)))
+        self.model.add(Conv2D(32, (3, 3), padding='same', input_shape=(24, 24, 1)))
         self.model.add(BatchNormalization())
+        self.model.add(Activation('relu'))
         self.model.add(Dropout(0.25))
 
-        self.model.add(Conv2D(32, (3, 3), activation='relu'))
+        self.model.add(Conv2D(32, (3, 3), padding='same'))
         self.model.add(BatchNormalization())
+        self.model.add(Activation('relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
 
-        self.model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
+        self.model.add(Conv2D(64, (3, 3), padding='same'))
         self.model.add(BatchNormalization())
+        self.model.add(Activation('relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
 
-        self.model.add(Conv2D(128, (3, 3), activation='relu'))
+        self.model.add(Conv2D(128, (3, 3), padding='same'))
         self.model.add(BatchNormalization())
+        self.model.add(Activation('relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
 
@@ -111,7 +115,7 @@ class NumberModel(abst.AbsModel):
 
     def fit(self):
         self.log(str(self.model.to_json()))
-        self.model.fit(self.train, self.train_labels, batch_size=128, epochs=10)
+        self.model.fit(self.train, self.train_labels, batch_size=128, epochs=20)
         self.model.save('number_model.h5')
 
     def score(self):
@@ -123,7 +127,6 @@ class NumberModel(abst.AbsModel):
     def load_test(self, test):
         test_no_index = test.drop(['index'], axis=1)
         test_matrices = test_no_index.as_matrix().reshape(20000, 24, 120, 1)
-        test_matrices[test_matrices < .4] = 0
         test_ims = np.array([test_matrices[:, :, 24 * i:24 * (i + 1), :] for i in range(0, 5, 2)])
         self.test = test_ims
 
