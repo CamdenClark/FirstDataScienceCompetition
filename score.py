@@ -25,7 +25,6 @@ def cartesian(arrays, out=None):
 
 numscores = [pd.read_csv("num1scores.csv"), pd.read_csv("num2scores.csv"), pd.read_csv("num3scores.csv")]
 numscores = [scores.drop(['Unnamed: 0'], axis=1) for scores in numscores]
-#finscores = [scores.apply(lambda x: np.array([np.where(x.as_matrix() <= .05)]), axis=1) for scores in numscores]
 finscores = [scores.apply(lambda x: np.where(x.as_matrix() >= .2), axis=1) for scores in numscores]
 
 equations = numbers.merge(symbols, how="inner", on="Unnamed: 0")
@@ -53,6 +52,5 @@ def score(equation, combination):
     else:
         return False
 testing = np.array(finscores).transpose([1, 0, 2])
-#final = [score_all(cartesian(symb.values, np.array(finscores[index]))) for index, symb in symbols.iterrows()]
 final = [score_all(symb, cartesian(testing[index])) for index, symb in symbols.iterrows()]
 outdf = pd.DataFrame(final, columns=['label']).to_csv("to_score.csv", index_label="index")

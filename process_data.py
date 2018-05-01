@@ -148,12 +148,12 @@ class NumberModel(abst.AbsModel):
 
 
 test = NumberModel()
-#test.load_train(
-#    pd.read_csv("data/train.csv"),
-#    pd.read_csv("data/train_labels.csv")
-#    )
-#test.load_model()
-#test.fit()
+test.load_train(
+    pd.read_csv("data/train.csv"),
+    pd.read_csv("data/train_labels.csv")
+    )
+test.load_model()
+test.fit()
 test.load_test(
         pd.read_csv("data/test.csv")
         )
@@ -163,4 +163,3 @@ test.predict()
 def split_test(test_csv):
     matrix_rep = test_csv.drop(['index'], axis=1).as_matrix().reshape(20000,24,120)
     return np.array([test_matrices[:, :, 24 * i:24 * (i + 1)] for i in range(5)])
-
