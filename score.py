@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-numbers = pd.read_csv("number1.csv")
 symbols = pd.read_csv("symbol.csv")
 
 def cartesian(arrays, out=None):
@@ -27,9 +26,6 @@ numscores = [pd.read_csv("num1scores.csv"), pd.read_csv("num2scores.csv"), pd.re
 numscores = [scores.drop(['Unnamed: 0'], axis=1) for scores in numscores]
 finscores = [scores.apply(lambda x: np.where(x.as_matrix() >= .2), axis=1) for scores in numscores]
 
-equations = numbers.merge(symbols, how="inner", on="Unnamed: 0")
-equations.reset_index()
-equations = equations.drop('Unnamed: 0', axis = 1)
 def score_all(equation, prod):
     for combination in prod:
         for combo in combination:

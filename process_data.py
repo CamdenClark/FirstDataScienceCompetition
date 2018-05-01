@@ -139,27 +139,28 @@ class NumberModel(abst.AbsModel):
         pd.DataFrame(num2scores).to_csv("num2scores.csv")
         pd.DataFrame(num3scores).to_csv("num3scores.csv")
 
-        number1 = np.argmax(num1scores, axis=1)
-        number2 = np.argmax(num2scores, axis=1)
-        number3 = np.argmax(num3scores, axis=1)
-        
-        newdf = pd.DataFrame(np.array([number1, number2, number3]).T)
-        newdf.to_csv("number1.csv")
-
-
-test = NumberModel()
-test.load_train(
+symbol_model = SymbolModel()
+symbol_model.load_train(
     pd.read_csv("data/train.csv"),
     pd.read_csv("data/train_labels.csv")
     )
-test.load_model()
-test.fit()
-test.load_test(
+symbol_model.load_model()
+symbol_model.fit()
+symbol_model.load_test(
         pd.read_csv("data/test.csv")
         )
-test.load_model_from_file('number_model.h5')
-test.predict()
+symbol_model.load_model_from_file('symbol_model.h5')
+symbol_model.predict()
 
-def split_test(test_csv):
-    matrix_rep = test_csv.drop(['index'], axis=1).as_matrix().reshape(20000,24,120)
-    return np.array([test_matrices[:, :, 24 * i:24 * (i + 1)] for i in range(5)])
+number_model = NumberModel()
+number_model.load_train(
+    pd.read_csv("data/train.csv"),
+    pd.read_csv("data/train_labels.csv")
+    )
+number_model.load_model()
+number_model.fit()
+number_model.load_test(
+        pd.read_csv("data/test.csv")
+        )
+number_model.load_model_from_file('number_model.h5')
+number_model.predict()
